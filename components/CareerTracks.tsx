@@ -1,6 +1,8 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from './ui/card';
 import { Code, Database, Shield, LineChart } from 'lucide-react';
+'use client';
+import { useRouter } from 'next/navigation';
 
 const tracks = [
   {
@@ -30,6 +32,7 @@ const tracks = [
 ];
 
 export default function CareerTracks() {
+    const router = useRouter();
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-6xl mx-auto">
@@ -44,7 +47,13 @@ export default function CareerTracks() {
           {tracks.map((track) => {
             const IconComponent = track.icon;
             return (
-              <Card key={track.title} className="transition-transform hover:scale-105 cursor-pointer">
+              <Card key={track.title} className="transition-transform hover:scale-105 cursor-pointer"
+              onClick={() => {
+                if (track.title === 'Software Development') {
+                    router.push('/challenges/debug-detective');
+                }
+            }}
+            >
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <div className={`p-3 rounded-lg ${track.color} bg-opacity-10`}>

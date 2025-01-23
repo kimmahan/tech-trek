@@ -1,4 +1,4 @@
-import CareerTracks from '@/components/CareerTracks';
+import CareerTracks from '../components/CareerTracks';
 
 export default function Home() {
   return <CareerTracks />;

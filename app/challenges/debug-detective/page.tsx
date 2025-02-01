@@ -5,8 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../..
 import { Button } from '../../../components/ui/button';
 import { Textarea } from '../../../components/ui/textarea';
 
-const buggyCode = `
-function processInventory(items) {
+const buggyCode = `function processInventory(items) {
   let total = 0;
   let inStock = [];
   
@@ -26,9 +25,9 @@ function processInventory(items) {
 
 // Test data
 const inventory = [
-  { id: 1, name: "Laptop", price: 999.99, quantity: 5 },
-  { id: 2, name: "Mouse", price: 24.99, quantity: 0 },
-  { id: 3, name: "Keyboard", price: 59.99, quantity: 2 }
+  { id: 1, name: &quot;Laptop&quot;, price: 999.99, quantity: 5 },
+  { id: 2, name: &quot;Mouse&quot;, price: 24.99, quantity: 0 },
+  { id: 3, name: &quot;Keyboard&quot;, price: 59.99, quantity: 2 }
 ];`;
 
 export default function DebugDetectivePage() {
@@ -49,11 +48,10 @@ export default function DebugDetectivePage() {
           <p className="text-gray-600 mb-4">
             Welcome, aspiring debug detective! Your mission is to identify and fix a bug in the
             inventory management system below. The code calculates the total and average price
-            of in-stock items, but something's not quite right...
+            of in-stock items, but something&apos;s not quite right...
           </p>
           <p className="text-gray-600 mb-4">
-            Feel free to use our free LLM <a href="https://gpt.maxxpotential.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">maxx-gpt</a> if you need help analyzing the problem, but be specific
-            in your questions - this helps us understand your debugging approach!
+            Feel free to use our free LLM <a href="#" className="text-blue-600 hover:text-blue-800 underline">maxx-gpt</a> if you need help analyzing the problem, but be specific in your questions - this helps us understand your debugging approach!
           </p>
         </div>
 
@@ -83,7 +81,7 @@ export default function DebugDetectivePage() {
               value={solution}
               onChange={(e) => setSolution(e.target.value)}
               placeholder="Describe the bug, its impact, and your solution..."
-              className="min-h-[200px] mb-4"
+              className="min-h-[200px] mb-4 w-full p-2 border rounded-md"
             />
             <div className="flex justify-between items-center">
               <Button 

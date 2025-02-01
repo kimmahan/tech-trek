@@ -1,7 +1,8 @@
+'use client';
+
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from './ui/card';
 import { Code, Database, Shield, LineChart } from 'lucide-react';
-'use client';
 import { useRouter } from 'next/navigation';
 
 const tracks = [

@@ -52,7 +52,7 @@ export default function DebugDetectivePage() {
             of in-stock items, but something's not quite right...
           </p>
           <p className="text-gray-600 mb-4">
-            Feel free to use maxx-gpt if you need help analyzing the problem, but be specific
+            Feel free to use our free LLM <a href="https://gpt.maxxpotential.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">maxx-gpt</a> if you need help analyzing the problem, but be specific
             in your questions - this helps us understand your debugging approach!
           </p>
         </div>

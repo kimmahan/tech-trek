@@ -1,132 +1,103 @@
+'use client';
+
 import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
+import { Textarea } from '../../../components/ui/textarea';
 
-const challenges = [
-  {
-    id: 1,
-    title: 'Array Sum Bug',
-    description: 'This function should sum all numbers in an array, but it\'s not working correctly.',
-    code: `function sumArray(arr) {
-  let sum = 0;
-  for (let i = 0; i <= arr.length; i++) {
-    sum += arr[i];
+const buggyCode = `
+function processInventory(items) {
+  let total = 0;
+  let inStock = [];
+  
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].quantity > 0) {
+      inStock.push(items[i]);
+      total += items[i].price;
+    }
   }
-  return sum;
-}`,
-    hint: 'Check the loop conditions carefully.',
-    solution: 'The loop condition should be i < arr.length instead of i <= arr.length to avoid accessing undefined.',
-    tests: [
-      { input: '[1, 2, 3]', expectedOutput: '6' },
-      { input: '[]', expectedOutput: '0' }
-    ]
-  },
-  {
-    id: 2,
-    title: 'String Reversal Issue',
-    description: 'This function should reverse a string, but some characters are being lost.',
-    code: `function reverseString(str) {
-  let reversed = '';
-  for (let i = str.length; i > 0; i--) {
-    reversed += str[i];
-  }
-  return reversed;
-}`,
-    hint: 'Think about array indexing in JavaScript.',
-    solution: 'Array indices should start from length-1, not length',
-    tests: [
-      { input: '"hello"', expectedOutput: '"olleh"' },
-      { input: '"12345"', expectedOutput: '"54321"' }
-    ]
-  }
-];
+  
+  return {
+    available: inStock,
+    totalValue: total,
+    averagePrice: total / items.length  // Bug: Should divide by inStock.length
+  };
+}
 
-const DebugChallenge = () => {
-  const [currentChallenge, setCurrentChallenge] = useState(0);
-  const [userSolution, setUserSolution] = useState('');
-  const [showHint, setShowHint] = useState(false);
-  const [showSolution, setShowSolution] = useState(false);
+// Test data
+const inventory = [
+  { id: 1, name: "Laptop", price: 999.99, quantity: 5 },
+  { id: 2, name: "Mouse", price: 24.99, quantity: 0 },
+  { id: 3, name: "Keyboard", price: 59.99, quantity: 2 }
+];`;
 
-  const challenge = challenges[currentChallenge];
+export default function DebugDetectivePage() {
+  const [solution, setSolution] = useState('');
+  const [hint, setHint] = useState('');
+  const [hasUsedHint, setHasUsedHint] = useState(false);
+
+  const requestHint = () => {
+    setHint("Consider what happens when some items have quantity 0. How does this affect the average price calculation?");
+    setHasUsedHint(true);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Debug Detective</h1>
-          <p className="text-gray-600">Find and fix bugs in progressively challenging code snippets.</p>
+          <h1 className="text-3xl font-bold mb-4">Debug Detective Challenge</h1>
+          <p className="text-gray-600 mb-4">
+            Welcome, aspiring debug detective! Your mission is to identify and fix a bug in the
+            inventory management system below. The code calculates the total and average price
+            of in-stock items, but something's not quite right...
+          </p>
+          <p className="text-gray-600 mb-4">
+            Feel free to use maxx-gpt if you need help analyzing the problem, but be specific
+            in your questions - this helps us understand your debugging approach!
+          </p>
         </div>
 
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>{challenge.title}</CardTitle>
-            <CardDescription>{challenge.description}</CardDescription>
+            <CardTitle>Buggy Code</CardTitle>
+            <CardDescription>
+              This inventory management code has a subtle bug. Can you spot it?
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">Buggy Code:</h3>
-              <pre className="bg-gray-800 text-white p-4 rounded-lg overflow-x-auto">
-                {challenge.code}
-              </pre>
-            </div>
+            <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+              <code>{buggyCode}</code>
+            </pre>
+          </CardContent>
+        </Card>
 
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">Test Cases:</h3>
-              <ul className="space-y-2">
-                {challenge.tests.map((test, index) => (
-                  <li key={index} className="text-sm">
-                    Input: {test.input} → Expected Output: {test.expectedOutput}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">Your Solution:</h3>
-              <textarea
-                value={userSolution}
-                onChange={(e) => setUserSolution(e.target.value)}
-                className="w-full h-40 p-4 border rounded-lg font-mono"
-                placeholder="Write your fixed version of the code here..."
-              />
-            </div>
-
-            <div className="flex gap-4">
-              <button
-                onClick={() => setShowHint(!showHint)}
-                className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Your Solution</CardTitle>
+            <CardDescription>
+              Explain the bug you found and how you would fix it. Include your reasoning!
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Textarea
+              value={solution}
+              onChange={(e) => setSolution(e.target.value)}
+              placeholder="Describe the bug, its impact, and your solution..."
+              className="min-h-[200px] mb-4"
+            />
+            <div className="flex justify-between items-center">
+              <Button 
+                variant="outline"
+                onClick={requestHint}
+                disabled={hasUsedHint}
               >
-                {showHint ? 'Hide Hint' : 'Show Hint'}
-              </button>
-              <button
-                onClick={() => setShowSolution(!showSolution)}
-                className="px-4 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200"
-              >
-                {showSolution ? 'Hide Solution' : 'Show Solution'}
-              </button>
-              {currentChallenge < challenges.length - 1 && (
-                <button
-                  onClick={() => {
-                    setCurrentChallenge(currentChallenge + 1);
-                    setUserSolution('');
-                    setShowHint(false);
-                    setShowSolution(false);
-                  }}
-                  className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 ml-auto"
-                >
-                  Next Challenge
-                </button>
-              )}
+                Request Hint
+              </Button>
+              <Button>Submit Solution</Button>
             </div>
-
-            {showHint && (
-              <div className="mt-4 p-4 bg-blue-50 text-blue-800 rounded-lg">
-                <strong>Hint:</strong> {challenge.hint}
-              </div>
-            )}
-
-            {showSolution && (
-              <div className="mt-4 p-4 bg-green-50 text-green-800 rounded-lg">
-                <strong>Solution:</strong> {challenge.solution}
+            {hint && (
+              <div className="mt-4 p-4 bg-blue-50 text-blue-700 rounded-lg">
+                {hint}
               </div>
             )}
           </CardContent>
@@ -134,6 +105,4 @@ const DebugChallenge = () => {
       </div>
     </div>
   );
-};
-
-export default DebugChallenge;
+}

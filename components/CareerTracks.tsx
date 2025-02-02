@@ -44,57 +44,54 @@ const tracks = [
 export default function CareerTracks() {
   const router = useRouter();
 
+  const handleTrackClick = React.useCallback((path: string) => {
+    router.push(path);
+  }, [router]);
+
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8" style={{backgroundColor: '#f9fafb'}}>
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8 md:mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 !text-gray-900" style={{color: '#111827'}}>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
             Choose Your Tech Career Path
           </h1>
-          <p className="text-base md:text-lg text-gray-600" style={{color: '#4B5563'}}>
+          <p className="text-gray-600 text-lg">
             Select a track to start your personalized tech career assessment
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {tracks.map((track) => {
             const IconComponent = track.icon;
             return (
-              <Card 
-                key={track.title} 
-                className="transition-all duration-200 hover:shadow-lg border border-gray-200 bg-white"
-                style={{backgroundColor: 'white'}}
-              >
-                <CardHeader>
-                  <div className="flex items-center gap-4">
-                    <div className={`p-3 rounded-lg ${track.bgColor} ${track.color}`}>
-                      <IconComponent className={`h-6 w-6`} />
+              <div key={track.title} className="relative">
+                <Card 
+                  className="transition-transform hover:scale-105 cursor-pointer"
+                >
+                  <CardHeader>
+                    <div className="flex items-center gap-4">
+                      <div className={`p-3 rounded-lg ${track.bgColor}`}>
+                        <IconComponent className={`h-6 w-6 ${track.color}`} />
+                      </div>
+                      <div>
+                        <CardTitle>{track.title}</CardTitle>
+                        <CardDescription>{track.description}</CardDescription>
+                      </div>
                     </div>
-                    <div>
-                      <CardTitle className="!text-gray-900" style={{color: '#111827'}}>
-                        {track.title}
-                      </CardTitle>
-                      <CardDescription className="!text-gray-600" style={{color: '#4B5563'}}>
-                        {track.description}
-                      </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-500">4 challenges</span>
+                      <Button 
+                        variant="ghost"
+                        onClick={() => handleTrackClick(track.path)}
+                      >
+                        Start Track →
+                      </Button>
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-500" style={{color: '#6B7280'}}>
-                      4 challenges
-                    </span>
-                    <Button 
-                      onClick={() => router.push(track.path)}
-                      className="text-sm font-medium bg-white hover:bg-gray-50 text-gray-900 border border-gray-200"
-                      style={{backgroundColor: 'white', color: '#111827'}}
-                    >
-                      Start Track →
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             );
           })}
         </div>

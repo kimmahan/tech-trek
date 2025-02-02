@@ -15,6 +15,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Tech Trek",
   description: "Tech career assessment platform",
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
 };
 
 export default function RootLayout({
@@ -24,7 +29,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.className} bg-gray-50 antialiased`}>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+      </head>
+      <body className={`${geistSans.className} bg-gray-50`} style={{backgroundColor: '#f9fafb'}}>
         {children}
       </body>
     </html>

@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from './ui/card';
 import { Code, Database, Shield, LineChart } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Button } from './ui/button';
 
 const tracks = [
@@ -42,12 +42,6 @@ const tracks = [
 ];
 
 export default function CareerTracks() {
-  const router = useRouter();
-
-  const handleTrackClick = React.useCallback((path: string) => {
-    router.push(path);
-  }, [router]);
-
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
@@ -64,7 +58,7 @@ export default function CareerTracks() {
           {tracks.map((track) => {
             const IconComponent = track.icon;
             return (
-              <div key={track.title} className="relative">
+              <Link href={track.path} key={track.title} className="relative">
                 <Card 
                   className="transition-transform hover:scale-105 cursor-pointer"
                 >
@@ -82,16 +76,13 @@ export default function CareerTracks() {
                   <CardContent>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-500">4 challenges</span>
-                      <Button 
-                        variant="ghost"
-                        onClick={() => handleTrackClick(track.path)}
-                      >
+                      <Button variant="ghost">
                         Start Track →
                       </Button>
                     </div>
                   </CardContent>
                 </Card>
-              </div>
+              </Link>
             );
           })}
         </div>

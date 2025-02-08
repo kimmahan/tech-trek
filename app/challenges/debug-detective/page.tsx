@@ -1,9 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
+import { debugChallengeService } from './service';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
 import { Textarea } from '../../../components/ui/textarea';
+import { Alert, AlertDescription } from '../../../components/ui/alert';
+import { useToast } from '../../../components/ui/use-toast';
+
+// Types for our submission data
+interface DebugSubmission {
+  solution: string;
+  usedHint: boolean;
+  timestamp: string;
+  timeSpent: number; // in seconds
+}
 
 const buggyCode = `function processInventory(items) {
   let total = 0;
@@ -25,19 +36,67 @@ const buggyCode = `function processInventory(items) {
 
 // Test data
 const inventory = [
-  { id: 1, name: &quot;Laptop&quot;, price: 999.99, quantity: 5 },
-  { id: 2, name: &quot;Mouse&quot;, price: 24.99, quantity: 0 },
-  { id: 3, name: &quot;Keyboard&quot;, price: 59.99, quantity: 2 }
+  { id: 1, name: "Laptop", price: 999.99, quantity: 5 },
+  { id: 2, name: "Mouse", price: 24.99, quantity: 0 },
+  { id: 3, name: "Keyboard", price: 59.99, quantity: 2 }
 ];`;
 
 export default function DebugDetectivePage() {
+  const { toast } = useToast();
   const [solution, setSolution] = useState('');
   const [hint, setHint] = useState('');
   const [hasUsedHint, setHasUsedHint] = useState(false);
+  const [startTime] = useState<number>(Date.now());
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const requestHint = () => {
     setHint("Consider what happens when some items have quantity 0. How does this affect the average price calculation?");
     setHasUsedHint(true);
+  };
+
+  const handleSubmit = async () => {
+    if (!solution.trim()) {
+      toast({
+        title: "Error",
+        description: "Please provide a solution before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const submission = {
+      solution: solution.trim(),
+      usedHint: hasUsedHint,
+      timeSpent: Math.floor((Date.now() - startTime) / 1000),
+      track: 'software-development',
+      challengeId: 'debug-detective',
+    };
+
+    try {
+      await debugChallengeService.submitSolution(submission);
+
+      // Log submission for development/testing
+      console.log('Submission stored:', submission);
+
+      toast({
+        title: "Success!",
+        description: "Your solution has been submitted successfully.",
+      });
+
+      setSubmitted(true);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit solution. Please try again.",
+        variant: "destructive",
+      });
+      console.error('Submission error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -81,22 +140,35 @@ export default function DebugDetectivePage() {
               value={solution}
               onChange={(e) => setSolution(e.target.value)}
               placeholder="Describe the bug, its impact, and your solution..."
-              className="min-h-[200px] mb-4 w-full p-2 border rounded-md"
+              className="min-h-[200px] mb-4"
+              disabled={submitted}
             />
             <div className="flex justify-between items-center">
               <Button 
                 variant="outline"
                 onClick={requestHint}
-                disabled={hasUsedHint}
+                disabled={hasUsedHint || submitted}
               >
                 Request Hint
               </Button>
-              <Button>Submit Solution</Button>
+              <Button
+                onClick={handleSubmit}
+                disabled={isSubmitting || submitted}
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit Solution'}
+              </Button>
             </div>
             {hint && (
               <div className="mt-4 p-4 bg-blue-50 text-blue-700 rounded-lg">
                 {hint}
               </div>
+            )}
+            {submitted && (
+               <Alert className="mt-4">
+                <AlertDescription>
+                  Thank you for your submission! Your solution has been recorded.
+                </AlertDescription>
+              </Alert>
             )}
           </CardContent>
         </Card>

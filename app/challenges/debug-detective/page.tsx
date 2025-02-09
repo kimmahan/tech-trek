@@ -2,19 +2,12 @@
 
 import React, { useState } from 'react';
 import { debugChallengeService } from './service';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/card';
-import { Button } from '../../../components/ui/button';
-import { Textarea } from '../../../components/ui/textarea';
-import { Alert, AlertDescription } from '../../../components/ui/alert';
-import { useToast } from '../../../components/ui/use-toast';
-
-// Types for our submission data
-interface DebugSubmission {
-  solution: string;
-  usedHint: boolean;
-  timestamp: string;
-  timeSpent: number; // in seconds
-}
+import { DebugSubmission } from './types';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useToast } from '@/components/ui/use-toast';
 
 const buggyCode = `function processInventory(items) {
   let total = 0;
@@ -67,7 +60,7 @@ export default function DebugDetectivePage() {
 
     setIsSubmitting(true);
 
-    const submission = {
+    const submission: DebugSubmission = {
       solution: solution.trim(),
       usedHint: hasUsedHint,
       timeSpent: Math.floor((Date.now() - startTime) / 1000),
@@ -77,10 +70,7 @@ export default function DebugDetectivePage() {
 
     try {
       await debugChallengeService.submitSolution(submission);
-
-      // Log submission for development/testing
-      console.log('Submission stored:', submission);
-
+      
       toast({
         title: "Success!",
         description: "Your solution has been submitted successfully.",
@@ -164,7 +154,7 @@ export default function DebugDetectivePage() {
               </div>
             )}
             {submitted && (
-               <Alert className="mt-4">
+              <Alert className="mt-4">
                 <AlertDescription>
                   Thank you for your submission! Your solution has been recorded.
                 </AlertDescription>

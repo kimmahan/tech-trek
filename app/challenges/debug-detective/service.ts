@@ -1,44 +1,77 @@
-// challenges/debug-detective/service.ts
+// service.ts
+import { DebugSubmission } from './types';
 
-export interface DebugSubmission {
-  solution: string;
-  usedHint: boolean;
-  timestamp: string;
-  timeSpent: number;
-  track: string;
-  challengeId: string;
+interface AirtableError {
+  error?: {
+    message?: string;
+    type?: string;
+  };
 }
 
-export class DebugChallengeService {
-  private readonly STORAGE_KEY = 'debug-detective-submissions';
+class DebugChallengeService {
+  private readonly AIRTABLE_API_KEY = process.env.NEXT_PUBLIC_AIRTABLE_API_KEY;
+  private readonly AIRTABLE_BASE_ID = process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID;
+  private readonly TABLE_ID = 'tblIJ2xkrajMlTpUo';
 
-  async submitSolution(submission: Omit<DebugSubmission, 'timestamp'>): Promise<DebugSubmission> {
-    const finalSubmission: DebugSubmission = {
-      ...submission,
-      timestamp: new Date().toISOString(),
-    };
+  async submitSolution(submission: DebugSubmission): Promise<void> {
+    console.log('Starting submission with config:', {
+      hasKey: !!this.AIRTABLE_API_KEY,
+      keyLength: this.AIRTABLE_API_KEY?.length,
+      baseId: this.AIRTABLE_BASE_ID,
+      tableId: this.TABLE_ID
+    });
 
+    const url = `https://api.airtable.com/v0/${this.AIRTABLE_BASE_ID}/${this.TABLE_ID}`;
+    
     try {
-      const existingSubmissions = this.getStoredSubmissions();
-      existingSubmissions.push(finalSubmission);
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(existingSubmissions));
-      
-      return finalSubmission;
-    } catch (error) {
-      console.error('Failed to store submission:', error);
-      throw new Error('Failed to store submission');
-    }
-  }
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.AIRTABLE_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          records: [{
+            fields: {
+              Solution: submission.solution,
+              UsedHint: submission.usedHint,
+              TimeSpent: submission.timeSpent,
+              Timestamp: new Date().toISOString(),
+              Track: submission.track,
+              ChallengeId: submission.challengeId
+            }
+          }]
+        })
+      });
 
-  getStoredSubmissions(): DebugSubmission[] {
-    try {
-      const stored = localStorage.getItem(this.STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
+      console.log('POST response:', {
+        ok: response.ok,
+        status: response.status,
+        statusText: response.statusText
+      });
+
+      const responseData: AirtableError = await response.json();
+      console.log('POST response data:', responseData);
+
+      if (!response.ok) {
+        const errorMessage = responseData.error?.message || 'Unknown error occurred';
+        console.error('Submission failed:', {
+          status: response.status,
+          message: errorMessage,
+          data: responseData
+        });
+        throw new Error(`Airtable API error: ${response.status} - ${errorMessage}`);
+      }
+
+    } catch (err) {
+      const error = err as Error;
+      console.error('Request failed:', {
+        message: error.message,
+        url: url
+      });
+      throw error;
     }
   }
 }
 
-// Export a singleton instance
 export const debugChallengeService = new DebugChallengeService();

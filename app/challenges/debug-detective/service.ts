@@ -33,12 +33,12 @@ class DebugChallengeService {
         body: JSON.stringify({
           records: [{
             fields: {
-              Solution: submission.solution,
-              UsedHint: submission.usedHint,
-              TimeSpent: submission.timeSpent,
-              Timestamp: new Date().toISOString(),
-              Track: submission.track,
-              ChallengeId: submission.challengeId
+              solution: submission.solution,
+              usedHint: submission.usedHint,
+              timeSpent: submission.timeSpent,
+              timestamp: new Date().toISOString(),
+              track: submission.track,
+              challengeId: submission.challengeId
             }
           }]
         })

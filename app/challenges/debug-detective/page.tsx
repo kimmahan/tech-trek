@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { debugChallengeService } from './service';
 import { DebugSubmission } from './types';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -66,10 +65,23 @@ export default function DebugDetectivePage() {
       timeSpent: Math.floor((Date.now() - startTime) / 1000),
       track: 'software-development',
       challengeId: 'debug-detective',
+      timestamp: new Date().toISOString()
     };
 
     try {
-      await debugChallengeService.submitSolution(submission);
+      const response = await fetch('/api/submit-debug', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submission),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit solution');
+      }
+
+      await response.json();
       
       toast({
         title: "Success!",
@@ -90,7 +102,7 @@ export default function DebugDetectivePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div key="debug-detective-container" className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">Debug Detective Challenge</h1>
@@ -127,6 +139,7 @@ export default function DebugDetectivePage() {
           </CardHeader>
           <CardContent>
             <Textarea
+              key="solution-textarea"
               value={solution}
               onChange={(e) => setSolution(e.target.value)}
               placeholder="Describe the bug, its impact, and your solution..."

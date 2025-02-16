@@ -34,11 +34,11 @@ const inventory = [
 ];`;
 
 export default function DebugDetectivePage() {
-  const { toast } = useToast();
+  const toast = useToast();
   const [solution, setSolution] = useState('');
   const [hint, setHint] = useState('');
   const [hasUsedHint, setHasUsedHint] = useState(false);
-  const [startTime] = useState<number>(Date.now());
+  const [startTime] = useState(() => Date.now());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 

@@ -7,7 +7,7 @@ console.log("ENV variables:", {
 
 export const submitToAirtable = async (submission: DebugSubmission) => {
   try {
-    const url = 'https://api.airtable.com/v0/appKCptKCNy1UCqp3/tblL12zkKrg3MtTplo';
+    const url = 'https://api.airtable.com/v0/appkCpEKCNylUCqoj/tblJ2xkrajMITpUo';
     console.log('Submitting to:', url);
     
     const requestBody = {

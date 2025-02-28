@@ -142,6 +142,7 @@ export default function DebugDetectivePage() {
               key="solution-textarea"
               value={solution}
               onChange={(e) => setSolution(e.target.value)}
+              onFocus={() => console.log('Textarea focused - checking for unintended fetches')} // Adding this for debugging
               placeholder="Describe the bug, its impact, and your solution..."
               className="min-h-[200px] mb-4"
               disabled={submitted}

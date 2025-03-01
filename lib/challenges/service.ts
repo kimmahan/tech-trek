@@ -5,7 +5,7 @@ import type { DebugSubmission } from '@/app/challenges/debug-detective/types';
 
 export const submitToAirtable = async (submission: DebugSubmission) => {
   try {
-    const url = 'https://api.airtable.com/v0/appKCptKCNy1UCqp3/tblL12zkKrg3MtTplo';
+    const url = 'https://api.airtable.com/v0/appkCpEKCNy1UCqoj/tblJ2xkrajMITpUo';
     console.log('Submitting to:', url);
     
     const requestBody = {

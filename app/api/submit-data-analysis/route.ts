@@ -1,6 +1,6 @@
 // app/api/submit-data-analysis/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { submitToAirtable } from '@/app/api/service';
+import { submitToAirtable } from '@/app/api/debug-detective/service';
 import type { DataAnalysisSubmission } from '@/app/challenges/data-science/types';
 
 export async function POST(request: NextRequest) {

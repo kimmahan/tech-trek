@@ -1,8 +1,12 @@
 // Modify your service.ts file
 import Airtable from 'airtable';
 import type { DebugSubmission } from '@/app/challenges/debug-detective/types';
+import type { DataAnalysisSubmission } from '@/app/challenges/data-science/types';
 
-export const submitToAirtable = async (submission: DebugSubmission) => {
+// Generic type for all challenge submissions
+type ChallengeSubmission = DebugSubmission | DataAnalysisSubmission;
+
+export const submitToAirtable = async (submission: ChallengeSubmission) => {
   try {
     console.log("ENV variables:", {
       AIRTABLE_API_KEY: process.env.AIRTABLE_API_KEY,
@@ -15,7 +19,7 @@ export const submitToAirtable = async (submission: DebugSubmission) => {
     }).base(process.env.AIRTABLE_BASE_ID || 'appkCpEKCNy1UCqoj');
 
     console.log('Attempting submission with Airtable library');
-    
+
     // Format the submission data for Airtable
     const formattedSubmission = {
       solution: submission.solution,
@@ -26,11 +30,20 @@ export const submitToAirtable = async (submission: DebugSubmission) => {
       // Convert ISO string to Date object for Airtable
       // timestamp: new Date(submission.timestamp)
     };
-    
+
     console.log('Request body:', JSON.stringify(formattedSubmission, null, 2));
+
+    // Determine which table to use based on the challenge type
+    let tableName = 'Challenge Submissions';
     
+    if (submission.challengeId.includes('debug')) {
+      tableName = 'Debug Challenge Submissions';
+    } else if (submission.challengeId.includes('data-analysis')) {
+      tableName = 'Data Analysis Submissions';
+    }
+
     // Create a record in the table
-    const result = await base('Debug Challenge Submissions').create([
+    const result = await base(tableName).create([
       {
         fields: formattedSubmission
       }

@@ -1,3 +1,4 @@
+'use client';
 // app/challenges/data-science/page.tsx
 import React from 'react';
 import { Button } from '@/components/ui/button';

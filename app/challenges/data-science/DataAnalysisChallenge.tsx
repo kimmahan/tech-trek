@@ -1,7 +1,7 @@
 'use client';
 // app/challenges/data-science/DataAnalysisChallenge.tsx
 import React, { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -22,7 +22,7 @@ interface DataPoint {
   customers: number;
 }
 
-const DataAnalysisChallenge: React.FC = () => {
+export default function DataAnalysisChallenge() {
   const [solution, setSolution] = useState('');
   const [timeSpent, setTimeSpent] = useState(0);
   const [startTime, setStartTime] = useState(0);
@@ -108,136 +108,22 @@ const DataAnalysisChallenge: React.FC = () => {
   const avgSalesPerCustomer = (totalSales / totalCustomers).toFixed(2);
 
   return (
-    <div>
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Sales Data Interpretation</h2>
-        
-        <p className="mb-4">
-          You've been provided with monthly sales and customer data for an e-commerce business. 
-          Analyze the data and provide insights on the following:
-        </p>
-        
-        <ul className="list-disc pl-6 mb-6">
-          <li>Identify months with the highest and lowest sales</li>
-          <li>Calculate the average monthly sales</li>
-          <li>Determine if there's a correlation between number of customers and sales</li>
-          <li>Recommend which months would be best for marketing campaigns based on historical data</li>
-          <li>Identify any seasonal trends in the data</li>
-        </ul>
-        
-        <div className="overflow-x-auto mb-6">
-          <table className="min-w-full bg-white border border-gray-200">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b">Month</th>
-                <th className="py-2 px-4 border-b">Sales ($)</th>
-                <th className="py-2 px-4 border-b">Customers</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataset.map((point, index) => (
-                <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
-                  <td className="py-2 px-4 border-b">{point.month}</td>
-                  <td className="py-2 px-4 border-b text-right">${point.sales.toLocaleString()}</td>
-                  <td className="py-2 px-4 border-b text-right">{point.customers}</td>
-                </tr>
-              ))}
-              <tr className="bg-gray-100 font-semibold">
-                <td className="py-2 px-4 border-b">Total</td>
-                <td className="py-2 px-4 border-b text-right">${totalSales.toLocaleString()}</td>
-                <td className="py-2 px-4 border-b text-right">{totalCustomers}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        
-        <div className="mb-6">
-          <p className="font-semibold">Summary Statistics:</p>
-          <p>Average Sales per Customer: ${avgSalesPerCustomer}</p>
-          
-          {/* Data Visualization */}
-          <div className="mt-6 h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={dataset}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
-                <Tooltip />
-                <Legend />
-                <Bar yAxisId="left" dataKey="sales" name="Sales ($)" fill="#8884d8" />
-                <Bar yAxisId="right" dataKey="customers" name="Customers" fill="#82ca9d" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        
-        {showHint && (
-          <div className="bg-blue-50 p-4 rounded-md mb-6">
-            <p className="font-semibold">Hint:</p>
-            <p>
-              Look for patterns in the summer months (Jun-Aug) versus winter months (Nov-Jan).
-              Consider calculating the coefficient of correlation between sales and customers.
-              When analyzing for marketing campaigns, consider both absolute sales and growth rates.
-            </p>
-          </div>
-        )}
-        
-        {!showHint && (
-          <Button 
-            onClick={handleShowHint}
-            variant="outline"
-            className="mb-6"
-          >
-            Need a Hint?
-          </Button>
-        )}
-        
-        <div className="mb-6">
-          <label className="block font-medium mb-2">
-            Your Analysis and Recommendations:
-          </label>
-          <Textarea
-            value={solution}
-            onChange={(e) => setSolution(e.target.value)}
-            placeholder="Enter your detailed analysis here..."
-            rows={10}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        
-        <Button
-          onClick={handleSubmit}
-          disabled={submitting || solution.trim().length < 50}
-          className="w-full"
-        >
-          {submitting ? 'Submitting...' : 'Submit Analysis'}
-        </Button>
-        
-        {error && (
-          <Alert variant="destructive" className="mt-4">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-        
-        {success && (
-          <Alert className="mt-4 bg-green-50 text-green-800 border-green-200">
-            <AlertDescription>
-              Your analysis has been submitted successfully! You can now continue to the next challenge.
-            </AlertDescription>
-          </Alert>
-        )}
-      </Card>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Data Analysis Challenge</CardTitle>
+        <CardDescription>
+          Analyze the given dataset and provide insights about customer behavior.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Textarea
+          value={solution}
+          onChange={(e) => setSolution(e.target.value)}
+          placeholder="Enter your analysis here..."
+          className="min-h-[200px] mb-4"
+        />
+        <Button>Submit Analysis</Button>
+      </CardContent>
+    </Card>
   );
-};
-
-export default DataAnalysisChallenge;
+}

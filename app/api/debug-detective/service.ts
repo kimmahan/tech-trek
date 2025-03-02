@@ -1,44 +1,39 @@
+import Airtable from 'airtable';
 import type { DebugSubmission } from '@/app/challenges/debug-detective/types';
-
-console.log("ENV variables:", {
-  AIRTABLE_API_KEY: process.env.AIRTABLE_API_KEY,
-  AIRTABLE_BASE_ID: process.env.AIRTABLE_BASE_ID,
-});
 
 export const submitToAirtable = async (submission: DebugSubmission) => {
   try {
-    const url = 'https://api.airtable.com/v0/appkCpEKCNylUCqoj/tblJ2xkrajMITpUo';
-    console.log('Submitting to:', url);
-    
-    const requestBody = {
-      records: [{
-        fields: submission
-      }]
-    };
-    
-    console.log('Request body:', JSON.stringify(requestBody, null, 2));
-    console.log('API Key present:', !!process.env.AIRTABLE_API_KEY);
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`,
-      },
-      body: JSON.stringify(requestBody),
+    console.log("ENV variables:", {
+      AIRTABLE_API_KEY: process.env.AIRTABLE_API_KEY,
+      AIRTABLE_BASE_ID: process.env.AIRTABLE_BASE_ID,
     });
 
-    const responseText = await response.text();
-    console.log('Response status:', response.status);
-    console.log('Response text:', responseText);
+    // Configure Airtable
+    const base = new Airtable({
+      apiKey: process.env.AIRTABLE_API_KEY
+    }).base(process.env.AIRTABLE_BASE_ID || 'appkCpEKCNy1UCqoj');
 
-    if (!response.ok) {
-      throw new Error(`Airtable API error: ${response.status} - ${responseText}`);
-    }
+    console.log('Attempting submission with Airtable library');
+    console.log('Request body:', JSON.stringify(submission, null, 2));
+    
+    // Create a record in the table
+    const result = await base('Debug Challenge Submissions').create([
+      {
+        fields: {
+          solution: submission.solution,
+          usedHint: submission.usedHint,
+          timeSpent: submission.timeSpent,
+          track: submission.track,
+          challengeId: submission.challengeId,
+          timestamp: submission.timestamp
+        }
+      }
+    ]);
 
-    return JSON.parse(responseText);
+    console.log('Airtable response:', JSON.stringify(result, null, 2));
+    return result;
   } catch (error) {
     console.error('Service error:', error);
     throw error;
   }
-}; 
+};

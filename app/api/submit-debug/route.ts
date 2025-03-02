@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { submitToAirtable } from '../debug-detective/service';
+import { submitToAirtable } from '@/app/api/debug-detective/service';
 
 export async function POST(request: Request) {
   if (!process.env.AIRTABLE_API_KEY) {

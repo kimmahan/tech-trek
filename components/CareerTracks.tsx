@@ -21,7 +21,7 @@ const tracks = [
     icon: LineChart,
     color: 'text-green-500',
     bgColor: 'bg-green-50',
-    path: '/challenges/data-analysis'
+    path: '/challenges/data-science'  // Updated path to match our new data science challenge
   },
   {
     title: 'Cybersecurity',

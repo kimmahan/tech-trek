@@ -1,3 +1,4 @@
+// Modify your service.ts file
 import Airtable from 'airtable';
 import type { DebugSubmission } from '@/app/challenges/debug-detective/types';
 
@@ -14,19 +15,24 @@ export const submitToAirtable = async (submission: DebugSubmission) => {
     }).base(process.env.AIRTABLE_BASE_ID || 'appkCpEKCNy1UCqoj');
 
     console.log('Attempting submission with Airtable library');
-    console.log('Request body:', JSON.stringify(submission, null, 2));
+    
+    // Format the submission data for Airtable
+    const formattedSubmission = {
+      solution: submission.solution,
+      usedHint: submission.usedHint,
+      timeSpent: submission.timeSpent,
+      track: submission.track,
+      challengeId: submission.challengeId,
+      // Convert ISO string to Date object for Airtable
+      // timestamp: new Date(submission.timestamp)
+    };
+    
+    console.log('Request body:', JSON.stringify(formattedSubmission, null, 2));
     
     // Create a record in the table
     const result = await base('Debug Challenge Submissions').create([
       {
-        fields: {
-          solution: submission.solution,
-          usedHint: submission.usedHint,
-          timeSpent: submission.timeSpent,
-          track: submission.track,
-          challengeId: submission.challengeId,
-          timestamp: submission.timestamp
-        }
+        fields: formattedSubmission
       }
     ]);
 

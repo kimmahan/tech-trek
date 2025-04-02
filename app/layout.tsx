@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
+import { ChallengeProvider } from '../context/ChallengeContext';
+import { Toaster } from '@/components/ui/toaster';
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -8,8 +10,8 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Tech Trek",
-  description: "Tech career assessment platform",
+  title: "MAXX Potential Tech Assessment",
+  description: "Interactive platform to assess tech aptitude",
 };
 
 export default function RootLayout({
@@ -20,7 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={geistSans.className}>
-        {children}
+        <ChallengeProvider>
+          <main>{children}</main>
+          <Toaster />
+        </ChallengeProvider>
       </body>
     </html>
   );

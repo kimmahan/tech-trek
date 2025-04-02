@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DebugSubmission } from './types';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/components/ui/use-toast';
+import ChallengeNavigation from '@/components/ChallengeNavigation';
+import ChallengeProgressTracker from '@/components/ChallengeProgressTracker';
+import { useChallenges } from '@/context/ChallengeContext';
 
 const buggyCode = `function processInventory(items) {
   let total = 0;
@@ -41,6 +44,12 @@ export default function DebugDetectivePage() {
   const [startTime] = useState(() => Date.now());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  
+  const { completeChallenge, getNextChallenge } = useChallenges();
+  const trackId = 'software-development';
+  const challengeId = 'debug-detective';
+  
+  const nextChallenge = getNextChallenge(trackId, challengeId);
 
   const requestHint = () => {
     setHint("Consider what happens when some items have quantity 0. How does this affect the average price calculation?");
@@ -63,8 +72,8 @@ export default function DebugDetectivePage() {
       solution: solution.trim(),
       usedHint: hasUsedHint,
       timeSpent: Math.floor((Date.now() - startTime) / 1000),
-      track: 'software-development',
-      challengeId: 'debug-detective',
+      track: trackId,
+      challengeId: challengeId,
       timestamp: new Date().toISOString()
     };
 
@@ -89,6 +98,7 @@ export default function DebugDetectivePage() {
       });
 
       setSubmitted(true);
+      completeChallenge(trackId, challengeId);
     } catch (error) {
       toast({
         title: "Error",
@@ -116,6 +126,8 @@ export default function DebugDetectivePage() {
           </p>
         </div>
 
+        <ChallengeProgressTracker trackId={trackId} currentChallengeId={challengeId} />
+
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Buggy Code</CardTitle>
@@ -142,7 +154,6 @@ export default function DebugDetectivePage() {
               key="solution-textarea"
               value={solution}
               onChange={(e) => setSolution(e.target.value)}
-              onFocus={() => console.log('Textarea focused - checking for unintended fetches')} // Adding this for debugging
               placeholder="Describe the bug, its impact, and your solution..."
               className="min-h-[200px] mb-4"
               disabled={submitted}
@@ -176,6 +187,12 @@ export default function DebugDetectivePage() {
             )}
           </CardContent>
         </Card>
+
+        <ChallengeNavigation 
+          prevPath="/" 
+          nextPath={nextChallenge?.path} 
+          isCompleted={submitted}
+        />
       </div>
     </div>
   );

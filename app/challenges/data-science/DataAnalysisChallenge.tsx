@@ -27,9 +27,9 @@ export default function DataAnalysisChallenge() {
   const [solution, setSolution] = useState('');
   // Keep track of these state variables for future implementation
   const [startTime, setStartTime] = useState(0);
-  const [usedHint, setUsedHint] = useState(false);
   
-  // Comment out unused state variables
+  // Comment out all unused state variables including usedHint
+  // const [usedHint, setUsedHint] = useState(false);
   // const [timeSpent, setTimeSpent] = useState(0);
   // const [showHint, setShowHint] = useState(false);
   // const [submitting, setSubmitting] = useState(false);
@@ -138,10 +138,7 @@ export default function DataAnalysisChallenge() {
           placeholder="Enter your analysis here..."
           className="min-h-[200px] mb-4"
         />
-        <Button 
-          onClick={() => setUsedHint(true)} // Simple handler to use the usedHint state
-          className="mr-2"
-        >
+        <Button className="mr-2">
           Show Hint
         </Button>
         <Button>Submit Analysis</Button>

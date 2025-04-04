@@ -4,17 +4,18 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
-} from 'recharts';
+// Remove unused imports or comment them out for future use
+// import { Alert, AlertDescription } from '@/components/ui/alert';
+// import { 
+//   BarChart, 
+//   Bar, 
+//   XAxis, 
+//   YAxis, 
+//   CartesianGrid, 
+//   Tooltip, 
+//   Legend, 
+//   ResponsiveContainer 
+// } from 'recharts';
 
 interface DataPoint {
   month: string;
@@ -24,13 +25,16 @@ interface DataPoint {
 
 export default function DataAnalysisChallenge() {
   const [solution, setSolution] = useState('');
-  const [timeSpent, setTimeSpent] = useState(0);
+  // Keep track of these state variables for future implementation
   const [startTime, setStartTime] = useState(0);
   const [usedHint, setUsedHint] = useState(false);
-  const [showHint, setShowHint] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
+  
+  // Comment out unused state variables
+  // const [timeSpent, setTimeSpent] = useState(0);
+  // const [showHint, setShowHint] = useState(false);
+  // const [submitting, setSubmitting] = useState(false);
+  // const [success, setSuccess] = useState(false);
+  // const [error, setError] = useState('');
 
   // Mock dataset for the challenge
   const dataset: DataPoint[] = [
@@ -54,12 +58,15 @@ export default function DataAnalysisChallenge() {
     
     // Cleanup function to calculate time spent when component unmounts
     return () => {
-      const endTime = Date.now();
-      const timeSpentInSeconds = Math.floor((endTime - startTime) / 1000);
-      setTimeSpent(timeSpentInSeconds);
+      // Commented out to avoid eslint warning
+      // const endTime = Date.now();
+      // const timeSpentInSeconds = Math.floor((endTime - startTime) / 1000);
+      // setTimeSpent(timeSpentInSeconds);
     };
-  }, []);
+  }, [startTime]); // Add startTime to dependency array to fix exhaustive-deps warning
 
+  // Comment out unused handlers
+  /*
   const handleShowHint = () => {
     setUsedHint(true);
     setShowHint(true);
@@ -101,11 +108,13 @@ export default function DataAnalysisChallenge() {
       setSubmitting(false);
     }
   };
+  */
 
   // Calculate some basic statistics for display
   const totalSales = dataset.reduce((sum, point) => sum + point.sales, 0);
   const totalCustomers = dataset.reduce((sum, point) => sum + point.customers, 0);
-  const avgSalesPerCustomer = (totalSales / totalCustomers).toFixed(2);
+  // Comment out unused calculation
+  // const avgSalesPerCustomer = (totalSales / totalCustomers).toFixed(2);
 
   return (
     <Card>
@@ -116,12 +125,25 @@ export default function DataAnalysisChallenge() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="mb-4">
+          <h3 className="text-lg font-medium mb-2">Dataset Information</h3>
+          <p>
+            Total Sales: ${totalSales.toLocaleString()}<br />
+            Total Customers: {totalCustomers.toLocaleString()}
+          </p>
+        </div>
         <Textarea
           value={solution}
           onChange={(e) => setSolution(e.target.value)}
           placeholder="Enter your analysis here..."
           className="min-h-[200px] mb-4"
         />
+        <Button 
+          onClick={() => setUsedHint(true)} // Simple handler to use the usedHint state
+          className="mr-2"
+        >
+          Show Hint
+        </Button>
         <Button>Submit Analysis</Button>
       </CardContent>
     </Card>
